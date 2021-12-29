@@ -7,8 +7,8 @@
 
 <div align="left">
 
-- [] Add Session Support
-- [] Add Docs to the box
-- [] Exception 
-- [] Datastructures
-- [] Testing thing
+- [ ] Add Session Support
+- [ ] Add Docs to the box
+- [ ] Exception 
+- [ ] Datastructures
+- [ ] Testing thing
