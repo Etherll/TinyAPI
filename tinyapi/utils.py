@@ -11,7 +11,7 @@ def format_pattern(route: str):
     route = re.sub(r':([a-zA-Z_]+)',r'(?P<\1>[^/]+)', route)
     return re.compile('^/%s$' % route)
 
-def guess_content_type(body: str):
+def guess_mimi_type(body: str):
     """
         This method guesses the content type of the body.
         It uses the first part of the content type.

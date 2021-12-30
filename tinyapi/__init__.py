@@ -17,7 +17,19 @@ __email__ = "email@xarty.xyz"
 from .application import TinyAPI
 from .extension import Extension
 from .http import STATUS_MESSAGE
-
+from .template import Renderer
 from .wrappers import Request, Respone
-
 from .serving import request
+
+from .tools import redirect
+
+__all__ = [
+    "TinyAPI",
+    "Extension",
+    "STATUS_MESSAGE",
+    "Renderer",
+    "Request",
+    "Respone",
+
+    "request",
+]

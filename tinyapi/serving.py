@@ -4,10 +4,12 @@ import re
 if typing.TYPE_CHECKING:
     from tinyapi.application import TinyAPI
 
-from tinyapi.wrappers import Request, respone
-from tinyapi.wrappers import Respone
+from tinyapi.wrappers import Request, Respone 
 from tinyapi.routing import Router, ErrorRoute
 from tinyapi.http import STATUS_MESSAGE
+from tinyapi.utils import guess_mimi_type
+
+from itsdangerous.url_safe import URLSafeSerializer
 
 request = Request()
 
@@ -104,13 +106,20 @@ class Serving:
             It will dispatch the request to the callback of the rule.
             If the request doesn't match any rule, it will return a 404 error.
         """
+
+        resp = self.get_isinstance(callback)
+
         if isinstance(callback, Respone):
             self.error_handler(callback.status_code, start_response)
+            print(callback._form_header())
+
             start_response(callback.status_code, callback._form_header())
         else:
-            start_response(f"{self.get_status_message(200)}", [("Content-Type", "text/html")])
+            mimi_type = guess_mimi_type(callback)
 
-        return self.get_isinstance(callback)
+            start_response(f"{self.get_status_message(200)}", [("Content-Type", mimi_type)])
+
+        return resp
     
     def __call__(self, env: typing.Dict[str,typing.Any], start_response: typing.Callable) -> None:
         """

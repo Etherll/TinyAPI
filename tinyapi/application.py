@@ -37,7 +37,7 @@ class Base(Routering):
 class TinyAPI(Base):
     def __init__(self) -> None:
         self.server = Serving(self)
-
+        self.extensions: typing.List["Extension"] = []
 
     def run(self, host: typing.Optional[str] = 'localhost', port: typing.Optional[int] = 5000) -> None:
         """
@@ -59,6 +59,8 @@ class TinyAPI(Base):
             This method is used to add an extension to the application.
         """
         extension.app = self
+
+        self.extensions.append(extension)
         
         for rule in extension.rules:
             self.add_rule(rule.path, rule.methods, rule.callback)

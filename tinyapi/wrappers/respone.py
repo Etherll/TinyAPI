@@ -38,7 +38,7 @@ class Respone:
         """
         if self.cookies != {}:
             self.headers["Set-Cookie"] = [
-                f"{key}={value}"
+                f"{key}={value};"
                 for key,value in self.cookies.items()
             ]
         if self.mimi_type:

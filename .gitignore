@@ -130,3 +130,5 @@ dmypy.json
 
 # Testing
 test.py
+test.html
+templates
