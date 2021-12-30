@@ -19,7 +19,7 @@ setuptools.setup(
         "Operating System :: MacOS",
         "Operating System :: Unix",
     ],
-    install_requires=['urllib3'],
+    install_requires=['urllib3','python-multipart','mako'],
     packages=setuptools.find_packages('.'),
     python_requires=">=3.6",
 )
