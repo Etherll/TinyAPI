@@ -18,4 +18,6 @@ from .application import TinyAPI
 from .extension import Extension
 from .http import STATUS_MESSAGE
 
+from .wrappers import Request, Respone
+
 from .serving import request

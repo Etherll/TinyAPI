@@ -1,10 +1,10 @@
 import typing
 
 class Respone:
-    def __init__(self, body: str, status_code='200 OK', content_type: str='text/plain') -> None:
+    def __init__(self, body: str, status_code='200 OK', mimi_type: str='text/html') -> None:
         self.body: str = body
         self.status_code: str = status_code
-        self.content_type: str = content_type
+        self.mimi_type: str = mimi_type
         self.headers: typing.Dict[str,str] = {}
         self.cookies: typing.Dict[str,str] = {}
 
@@ -32,7 +32,7 @@ class Respone:
         """
         del self.cookies[key]
 
-    def __form_header(self):
+    def _form_header(self):
         """
             This method returns the headers of the respone.
         """
@@ -41,6 +41,11 @@ class Respone:
                 f"{key}={value}"
                 for key,value in self.cookies.items()
             ]
+        if self.mimi_type:
+            self.headers['Content-Type'] = self.mimi_type
+        if self.body:
+            self.headers['Content-Length'] = str(len(self.body))
+        self.headers['Provider'] = 'TinyAPI / 0.1'
         return [(k,v) for k,v in self.headers.items()]
 
     def __repr__(self) -> str:
