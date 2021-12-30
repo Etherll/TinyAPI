@@ -45,7 +45,7 @@ class Respone:
             self.headers['Content-Type'] = self.mimi_type
         if self.body:
             self.headers['Content-Length'] = str(len(self.body))
-        self.headers['Provider'] = 'TinyAPI / 0.1'
+        self.headers['Provider'] = 'TinyAPI'
         return [(k,v) for k,v in self.headers.items()]
 
     def __repr__(self) -> str:

@@ -35,9 +35,11 @@ class Base(Routering):
         return decorator
 
 class TinyAPI(Base):
-    def __init__(self) -> None:
+    def __init__(self, middlewares: typing.Optional[typing.List[typing.Callable]] = []) -> None:
         self.server = Serving(self)
         self.extensions: typing.List["Extension"] = []
+
+        self.middlewares = middlewares
 
     def run(self, host: typing.Optional[str] = 'localhost', port: typing.Optional[int] = 5000) -> None:
         """
@@ -64,6 +66,8 @@ class TinyAPI(Base):
         
         for rule in extension.rules:
             self.add_rule(rule.path, rule.methods, rule.callback)
+        for error in extension.errors:
+            self.add_error(error.code, error.callback)
 
     def use(self, callable: typing.Callable) -> None:
         """

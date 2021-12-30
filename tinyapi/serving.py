@@ -1,4 +1,5 @@
 import typing
+import traceback
 import re
 
 if typing.TYPE_CHECKING:
@@ -8,8 +9,6 @@ from tinyapi.wrappers import Request, Respone
 from tinyapi.routing import Router, ErrorRoute
 from tinyapi.http import STATUS_MESSAGE
 from tinyapi.utils import guess_mimi_type
-
-from itsdangerous.url_safe import URLSafeSerializer
 
 request = Request()
 
@@ -111,15 +110,35 @@ class Serving:
 
         if isinstance(callback, Respone):
             self.error_handler(callback.status_code, start_response)
-            print(callback._form_header())
 
             start_response(callback.status_code, callback._form_header())
         else:
             mimi_type = guess_mimi_type(callback)
+            content_length = str(sum(len(x) for x in resp))
 
-            start_response(f"{self.get_status_message(200)}", [("Content-Type", mimi_type)])
+            headers = [("Content-Type", mimi_type), ("Content-Length", content_length), ("Provider", "TinyAPI")]
+            start_response(self.get_status_message(200), headers)
 
         return resp
+
+    def middleware_handler(self, middleware: typing.Callable, start_response: typing.Callable) -> None:
+        """
+            This method is responsible for handling the middlewares.
+        """
+        resp = middleware()
+        if isinstance(resp, Respone):
+            start_response(self.get_status_message(resp.status_code), resp._form_header())
+            if resp is not None:
+                return self.get_isinstance(resp)
+
+    def traceback_handler(self,traceback: typing.Any ,start_response: typing.Callable) -> None:
+        """
+            This method is responsible for handling the tracebacks.
+            When a traceback is raised, it will return a 500 error.
+        """
+        start_response(self.get_status_message(500), [("Content-Type", "text/html")])
+        return self.get_isinstance(traceback)
+        
     
     def __call__(self, env: typing.Dict[str,typing.Any], start_response: typing.Callable) -> None:
         """
@@ -127,6 +146,12 @@ class Serving:
         """
         global request
         request.bind(env)
+
+        if self.app.middlewares:
+            for middleware in self.app.middlewares:
+                resp = self.middleware_handler(middleware=middleware, start_response=start_response)
+                if resp is not None:
+                    return resp
 
         rule, match_data = self.get_rule(request.path)
 
@@ -136,9 +161,14 @@ class Serving:
         if request.method not in rule.methods:
             return self.method_not_allowed(405, start_response)
 
-        callback = rule.callback(**match_data)
+        try:
+            callback = rule.callback(**match_data)
+        except Exception as e:
+            return self.traceback_handler(e, start_response)
 
-        if callback is None:
+        _callback = self.request_handler(callback, start_response)
+
+        if _callback is None:
             return self.no_body_found(start_response)
         
-        return self.request_handler(callback, start_response)
+        return _callback
