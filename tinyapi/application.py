@@ -54,6 +54,10 @@ class TinyAPI(Base):
         """
         from wsgiref.simple_server import make_server
 
+        print(f"* Running on http://{host}:{port}")
+        print(f"* Use prodcution WSGI like gunicon/uwsgi to run the application in production.")
+        print(f"* Use Ctrl+C to quit")
+
         make_server(host, port, self.server).serve_forever()
 
     def add_extension(self, extension: "Extension") -> None:
@@ -65,9 +69,14 @@ class TinyAPI(Base):
         self.extensions.append(extension)
         
         for rule in extension.rules:
-            self.add_rule(rule.path, rule.methods, rule.callback)
+            self.rules.append(rule)
+            extension.rules.remove(rule)
+
         for error in extension.errors:
-            self.add_error(error.code, error.callback)
+            self.errors.append(error)
+            extension.errors.remove(error)
+
+        print(f"* Extension {extension.name} added.")
 
     def use(self, callable: typing.Callable) -> None:
         """

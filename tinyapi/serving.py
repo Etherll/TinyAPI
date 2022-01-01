@@ -22,14 +22,14 @@ class Serving:
             This method will return a 405 error.
         """
         start_response("405 Method Not Allowed", [("Content-Type", "text/html")])
-        return [self.get_isinstance(self.get_error_rule(405).callback())]
+        return [b'405 Method Not Allowed']
 
     def not_found(self, start_response: typing.Callable) -> None:
         """
             This method will return a 404 error.
         """
         start_response("404 Not Found", [("Content-Type", "text/html")])
-        return [self.get_isinstance(self.get_error_rule(404).callback())]
+        return [b'404 Not Found']
 
     def no_body_found(self, start_response: typing.Callable) -> None:
         """
@@ -156,10 +156,10 @@ class Serving:
         rule, match_data = self.get_rule(request.path)
 
         if rule is None:
-            return self.not_found(404, start_response)
+            return self.not_found(start_response)
 
         if request.method not in rule.methods:
-            return self.method_not_allowed(405, start_response)
+            return self.method_not_allowed(start_response)
 
         try:
             callback = rule.callback(**match_data)

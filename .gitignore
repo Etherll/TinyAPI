@@ -130,5 +130,6 @@ dmypy.json
 
 # Testing
 test.py
+ext.py
 test.html
 templates

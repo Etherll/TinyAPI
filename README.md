@@ -26,7 +26,7 @@ if __name__ == "__main__":
 <div align="left">
 
 - [ ] Add Session Support
-- [ ] Add Docs to the box
+- [ x ] Add Docs to the box
 - [ ] Exception 
 - [ ] Datastructures
 - [ ] Testing thing
