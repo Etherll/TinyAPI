@@ -20,6 +20,13 @@ class Request(threading.local):
         " The form of the request. "
 
     @property
+    def version(self) -> str:
+        """
+            The HTTP version of the request. 
+        """
+        return self.environ.get("SERVER_PROTOCOL", None)
+
+    @property
     def method(self) -> str:
         """
             This property returns the method of the request.

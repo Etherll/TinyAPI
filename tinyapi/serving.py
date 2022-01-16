@@ -1,5 +1,5 @@
 import typing
-import traceback
+import logging
 import re
 
 if typing.TYPE_CHECKING:
@@ -11,6 +11,7 @@ from tinyapi.http import STATUS_MESSAGE
 from tinyapi.utils import guess_mimi_type
 
 request = Request()
+logger = logging.getLogger('tinyapi')
 
 class Serving:
     def __init__(self, app: "TinyAPI") -> None:
@@ -146,6 +147,8 @@ class Serving:
         """
         global request
         request.bind(env)
+
+        logger.info(f"{request.method} {request.path} {request.version}")
 
         if self.app.middlewares:
             for middleware in self.app.middlewares:

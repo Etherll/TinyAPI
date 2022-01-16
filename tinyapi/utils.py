@@ -25,6 +25,9 @@ def guess_mimi_type(body: str):
         body : `str`
             The body of the request.
     """
+    if body is None:
+        return 'text/plain'
+    
     if body.startswith(("<!DOCTYPE html>", "<!doctype html>", "<html>")):
         return "text/html"
     else:
