@@ -38,7 +38,7 @@ class Serving:
         start_response("404 Not Found", [("Content-Type", "text/html")])
         return [b'No body returned']
 
-    def get_rule(self, path: str) -> typing.Optional["Router"]:
+    def get_rule(self, path: str, method: str=None) -> typing.Union[None, "Router"]: # type ignore
         """
             This method will return the rule that matches the request.
             If the request doesn't match any rule, it will return None.
@@ -46,7 +46,8 @@ class Serving:
         for rule in self.app.rules:
             match = re.match(rule.path, path)
             if match is not None:
-                return (rule, match.groupdict())
+                if method in rule.methods:
+                    return (rule, match.groupdict())
         return (None,{})
 
     def get_error_rule(self, code: int) -> typing.Optional["ErrorRoute"]:
@@ -138,7 +139,6 @@ class Serving:
         """
         start_response(self.get_status_message(500), [("Content-Type", "text/html")])
         return self.get_isinstance(traceback)
-        
     
     def __call__(self, env: typing.Dict[str,typing.Any], start_response: typing.Callable) -> None:
         """
@@ -153,8 +153,8 @@ class Serving:
                 if resp is not None:
                     return resp
 
-        rule, match_data = self.get_rule(request.path)
-
+        rule, match_data = self.get_rule(request.path, request.method)
+        
         if rule is None:
             return self.not_found(start_response)
 
@@ -166,9 +166,9 @@ class Serving:
         except Exception as e:
             return self.traceback_handler(e, start_response)
 
-        _callback = self.request_handler(callback, start_response)
+        callback = self.request_handler(callback, start_response)
 
-        if _callback is None:
+        if callback is None:
             return self.no_body_found(start_response)
         
-        return _callback
+        return callback

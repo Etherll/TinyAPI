@@ -8,3 +8,5 @@ class Extension(Base):
     def __init__(self, name: str) -> None:
         self.name = name
         " The name of the extension. "
+
+        Base.__init__(self)

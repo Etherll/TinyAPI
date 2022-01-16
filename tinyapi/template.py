@@ -1,6 +1,4 @@
 import typing
-import pathlib
-import os
 
 from mako.template import Template
 

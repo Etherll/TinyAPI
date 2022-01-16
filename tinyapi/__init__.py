@@ -20,6 +20,8 @@ from .http import STATUS_MESSAGE
 from .template import Renderer
 from .wrappers import Request, Respone
 from .serving import request
+from .class_route import ClassRoute
+from .exception import ExtensionNotFound
 
 from .tools import redirect
 

@@ -59,8 +59,10 @@ class Request(threading.local):
         """
             This property returns the content length of the request.
         """
+
         try:
-            int(self.environ.get("CONTENT_LENGTH"))
+            return int(
+                self.environ.get("CONTENT_LENGTH"))
         except (ValueError, TypeError):
             return None
 
@@ -79,7 +81,8 @@ class Request(threading.local):
         def on_file(file):
             self._form[file.name] = file.filename
         def on_field(field):
-            self._form[field.field_name] = field.value
+            self._form[
+                field.field_name.decode('utf-8')] = field.value.decode('utf-8')
 
         headers = {'Content-Type': self.mimie}
 
@@ -91,14 +94,17 @@ class Request(threading.local):
         if "multipart/form-data" in headers["Content-Type"]:
             multipart.parse_form(headers, self.environ['wsgi.input'], on_file=on_file, on_field=on_field)
 
-        return self._form
+        return self._form if self._form != {} else None
 
     @property
     def json(self) -> typing.Dict[str, typing.Any]:
         """
             This property returns the json of the request.
         """
-        return json.loads(self.body)
+        try:
+            return json.loads(self.body)
+        except (ValueError, TypeError):
+            return {}
 
     def __repr__(self) -> str:
         return f"<Request {self.environ['PATH_INFO']} {self.environ['REQUEST_METHOD']}>"

@@ -61,7 +61,8 @@ class Routering:
             func : `typing.Callable`
                 The callback function.
         """
-        self.rules.append(Router(path, methods, func))
+        self.rules.append(
+            Router(path, methods, func))
 
     def remove_rule(self, path: str, method: str) -> None:
         """
@@ -77,6 +78,21 @@ class Routering:
         for router in self.rules:
             if router.path == path and method in router.methods:
                 self.rules.remove(router)
+
+    def get_rule(self, path: str) -> typing.Union[None, "Router"]:
+        """
+            This method returns the rule that matches the request.
+
+            Parameters
+            ----------
+            path : `str`
+                The path of the request.
+
+        """
+        for router in self.rules:
+            if router.path == path:
+                return router
+        return None
 
     def add_error(self, code: int, func: typing.Callable) -> None:
         """
