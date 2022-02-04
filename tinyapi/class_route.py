@@ -1,5 +1,6 @@
 import typing
 
+
 class ClassRoute:
     def __init__(self, path: str) -> None:
         self.path = path
@@ -9,12 +10,18 @@ class ClassRoute:
         """ The methods of the rule. """
 
         for attr in dir(self):
-            if attr.startswith('on_'):
-                if attr[3:] in ['post', 'get', 'put', 'delete', 'head', 'options', 'patch']:
-                    self.methods.append(
-                        getattr(self, attr))
-
+            if attr.startswith("on_"):
+                if attr[3:] in [
+                        "post",
+                        "get",
+                        "put",
+                        "delete",
+                        "head",
+                        "options",
+                        "patch",
+                ]:
+                    self.methods.append(getattr(self, attr))
         """ The methods of the rule. """
-    
+
     def __repr__(self) -> str:
         return f"<Rule {self.path}>"
