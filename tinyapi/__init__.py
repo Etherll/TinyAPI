@@ -15,8 +15,7 @@ __maintainer__ = "Zaid Ali"
 __email__ = "email@xarty.xyz"
 
 from .application import TinyAPI
-
-from .wrappers import *
 from .exception import *
-from .template import *
 from .http import *
+from .template import *
+from .wrappers import *
